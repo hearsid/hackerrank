@@ -11,6 +11,7 @@ class HR_Scrapper:
     FILTERS = {
         'status': 'solved'
     }
+    PREFIX = "__"
     def __init__(self):
         return
 
@@ -34,13 +35,13 @@ class HR_Scrapper:
                  self.create_code_file(track, chal_slug, code)
 
     def create_code_file(self, track, filename, code ):
-        dir = './'+track
+        dir = './'+self.PREFIX+track
         if not os.path.isdir(dir):
             os.mkdir(dir)
-            print(code, file=open('./'+track+"/"+ filename + get_file_extension(track), 'w'))
+            print(code, file=open('./'+self.PREFIX+track+"/"+ filename + get_file_extension(track), 'w'))
 
         else:
-            print(code, file=open('./'+track+"/"+ filename + get_file_extension(track), 'w'))
+            print(code, file=open('./'+self.PREFIX+track+"/"+ filename + get_file_extension(track), 'w'))
 
     def get_submissions(self, chal_slug):
         PARAMS = {
