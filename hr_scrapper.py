@@ -2,6 +2,7 @@ import requests
 from credentials import CSRF_TOKEN, COOKIE
 import os
 from util import get_file_extension
+from constants import BASE_URL
 
 class HR_Scrapper:
     HEADERS = {
@@ -16,7 +17,7 @@ class HR_Scrapper:
         return
 
     def get_track(self, track):
-        URL = "https://www.hackerrank.com/rest/contests/master/tracks/"+track+"/challenges"
+        URL = BASE_URL+"tracks/"+track+"/challenges"
         PARAMS = {
             'offset': 0,
             'limit': 100,
@@ -29,26 +30,27 @@ class HR_Scrapper:
             sub_id = self.get_submissions(chal_slug)
             code = False
             if sub_id:
-                 code = self.get_code(chal_slug, sub_id)
+                 code, lang = self.get_code(chal_slug, sub_id)
 
             if code:
-                 self.create_code_file(track, chal_slug, code)
+                 ext = get_file_extension(track, lang)
+                 self.create_code_file(track, chal_slug, code, ext)
 
-    def create_code_file(self, track, filename, code ):
+    def create_code_file(self, track, filename, code, ext ):
         dir = './'+self.PREFIX+track
         if not os.path.isdir(dir):
             os.mkdir(dir)
-            print(code, file=open('./'+self.PREFIX+track+"/"+ filename + get_file_extension(track), 'w'))
+            print(code, file=open('./'+self.PREFIX+track+"/"+ filename + ext, 'w'))
 
         else:
-            print(code, file=open('./'+self.PREFIX+track+"/"+ filename + get_file_extension(track), 'w'))
+            print(code, file=open('./'+self.PREFIX+track+"/"+ filename + ext, 'w'))
 
     def get_submissions(self, chal_slug):
         PARAMS = {
             'offset': '0',
             'limit': '10'
         }
-        URL = "https://www.hackerrank.com/rest/contests/master/challenges/"+chal_slug+"/submissions/?offset="+PARAMS.get('offset')+"&limit="+PARAMS.get('limit')
+        URL = BASE_URL+"challenges/"+chal_slug+"/submissions/?offset="+PARAMS.get('offset')+"&limit="+PARAMS.get('limit')
         submissions = requests.get(url=URL, headers= self.HEADERS)
         models = submissions.json()['models']
         if len(models) > 0:
@@ -59,10 +61,11 @@ class HR_Scrapper:
 
 
     def get_code(self, chal_slug, sub_id):
-        URL = "https://www.hackerrank.com/rest/contests/master/challenges/"+chal_slug+"/submissions/"+str(sub_id)
+        URL = BASE_URL+"challenges/"+chal_slug+"/submissions/"+str(sub_id)
         code_res = requests.get(url=URL, headers=self.HEADERS)
         model = code_res.json()['model']
         code = model['code']
-        return code
+        language = model['language']
+        return { code, language }
 
 
