@@ -30,7 +30,9 @@ class HR_Scrapper:
             sub_id = self.get_submissions(chal_slug)
             code = False
             if sub_id:
-                 code, lang = self.get_code(chal_slug, sub_id)
+                 result= self.get_code(chal_slug, sub_id)
+                 code = result['code']
+                 lang = result['language']
 
             if code:
                  ext = get_file_extension(track, lang)
@@ -40,7 +42,9 @@ class HR_Scrapper:
         dir = './'+self.PREFIX+track
         if not os.path.isdir(dir):
             os.mkdir(dir)
-            print(code, file=open('./'+self.PREFIX+track+"/"+ filename + ext, 'w'))
+            file_path = './'+self.PREFIX+track+"/"+ filename + ext
+            if not os.path.isfile(file_path):
+                print(code, file=open(file_path, 'w'))
 
         else:
             print(code, file=open('./'+self.PREFIX+track+"/"+ filename + ext, 'w'))
@@ -66,6 +70,9 @@ class HR_Scrapper:
         model = code_res.json()['model']
         code = model['code']
         language = model['language']
-        return { code, language }
+        result = dict()
+        result['code'] = code
+        result['language'] = language
+        return result
 
 
