@@ -2,7 +2,7 @@
 import requests
 from hr_scrapper import HR_Scrapper
 
-TRACKS = ['java', 'python', 'tutorials', 'algorithms']
+TRACKS = ['java', 'python', 'tutorials', 'algorithms', 'data-structures', 'mathematics']
 
 hr_scrap = HR_Scrapper()
 

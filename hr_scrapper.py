@@ -27,6 +27,7 @@ class HR_Scrapper:
         models = tracks.json()['models']
         for i in models:
             chal_slug = i.get('slug')
+            sub_domain = i.get('track').get('slug')
             sub_id = self.get_submissions(chal_slug)
             code = False
             if sub_id:
@@ -36,18 +37,17 @@ class HR_Scrapper:
 
             if code:
                  ext = get_file_extension(track, lang)
-                 self.create_code_file(track, chal_slug, code, ext)
+                 self.create_code_file(track, sub_domain, chal_slug, code, ext)
 
-    def create_code_file(self, track, filename, code, ext ):
-        dir = './'+self.PREFIX+track
-        if not os.path.isdir(dir):
-            os.mkdir(dir)
-            file_path = './'+self.PREFIX+track+"/"+ filename + ext
-            if not os.path.isfile(file_path):
-                print(code, file=open(file_path, 'w'))
-
+    def create_code_file(self, track, sub_domain, filename, code, ext ):
+        dir = './'+self.PREFIX+track+"/"+sub_domain+"/"
+        file_path = dir+ filename + ext
+        if not os.path.exists(dir): #os.path.isdir(dir):
+                os.makedirs(dir)
+                if not os.path.isfile(file_path):
+                    print(code, file=open(file_path, 'w'))
         else:
-            print(code, file=open('./'+self.PREFIX+track+"/"+ filename + ext, 'w'))
+            print(code, file=open(file_path, 'w'))
 
     def get_submissions(self, chal_slug):
         PARAMS = {
