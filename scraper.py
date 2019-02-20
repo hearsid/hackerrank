@@ -1,8 +1,10 @@
 # make the categories for which I have to retrieve data in an array
 import requests
 from hr_scrapper import HR_Scrapper
+import logging
 
-TRACKS = ['java', 'python', 'tutorials', 'algorithms', 'data-structures', 'mathematics']
+logging.basicConfig(filename="logs.txt")
+TRACKS = ['java', 'python', 'tutorials', 'algorithms', 'data-structures', 'mathematics', '10-days-of-statistics']
 
 hr_scrap = HR_Scrapper()
 
@@ -10,4 +12,6 @@ for i in TRACKS:
     try:
         hr_scrap.get_track(i)
     except Exception as e:
-        print('Something went wrong', str(e))
+        print('Something went wrong::', str(e))
+        logging.warning(e)
+        pass
