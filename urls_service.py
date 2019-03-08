@@ -22,7 +22,11 @@ class UrlService:
             'limit': 100,
             'filters': self.FILTERS,
         }
-        get_track = requests.get(url=URL, params=PARAMS, headers=self.HEADERS)
+        try:
+            get_track = requests.get(url=URL, params=PARAMS, headers=self.HEADERS)
+        except Exception as e:
+            e.track = track;
+            raise e
         return get_track
 
     def get_submissions_request(self, chal_slug):
@@ -32,10 +36,18 @@ class UrlService:
         }
         URL = BASE_URL + "challenges/" + chal_slug + "/submissions/?offset=" + PARAMS.get(
             'offset') + "&limit=" + PARAMS.get('limit')
-        submissions = requests.get(url=URL, headers=self.HEADERS)
+        try:
+            submissions = requests.get(url=URL, headers=self.HEADERS)
+        except Exception as e:
+            e.track = chal_slug;
+            raise e
         return submissions
 
     def get_particular_submission(self, chal_slug, sub_id):
         URL = BASE_URL + "challenges/" + chal_slug + "/submissions/" + str(sub_id)
-        code_res = requests.get(url=URL, headers=self.HEADERS)
+        try:
+            code_res = requests.get(url=URL, headers=self.HEADERS)
+        except Exception as e:
+            e.track = chal_slug;
+            raise e
         return code_res

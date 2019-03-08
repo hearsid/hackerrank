@@ -15,10 +15,17 @@ class HR_Scrapper:
         for i in models:
             chal_slug = i.get('slug')
             sub_domain = i.get('track').get('slug')
+            if chal_slug is None:
+                raise Exception("Chal_slug:"+str(chal_slug))
+
+            print("Domain: "+sub_domain)
+            print("Get track: "+chal_slug)
+
             sub_id = self.get_submissions(chal_slug)
             code = False
             if sub_id:
                  result= self.get_code(chal_slug, sub_id)
+                 print(" -------------------------- ")
                  code = result['code']
                  lang = result['language']
 
@@ -38,9 +45,13 @@ class HR_Scrapper:
 
     def get_submissions(self, chal_slug):
       submissions = self.urlService.get_submissions_request(chal_slug)
+      if submissions is None:
+          raise Exception("Submissions: "+str(submissions))
+
       models = submissions.json()['models']
       if len(models) > 0:
              sub_id = models[0]['id']
+             print("Get submission with submission id: "+str(sub_id))
              return sub_id
       else:
             return False
@@ -48,9 +59,13 @@ class HR_Scrapper:
 
     def get_code(self, chal_slug, sub_id):
         code_res = self.urlService.get_particular_submission(chal_slug, sub_id)
+        if code_res is None:
+            raise Exception("Code_res: "+code_res)
+
         model = code_res.json()['model']
         code = model['code']
         language = model['language']
+        print("Get code: "+code[0:10]+" "+language)
         result = dict()
         result['code'] = code
         result['language'] = language
