@@ -7,7 +7,10 @@ def get_file_extension(track,lang):
         'python3': '.py',
         'python2': '.py',
         'csharp': '.cs',
-        'javascript': '.js'
+        'javascript': '.js',
+        'sql':'.sql',
+        'mysql':'.sql',
+        'oracle': '.sql'
     }
     return ext[lang] or ext[track]
 
